@@ -1,12 +1,14 @@
 language: python
 dist:
-  - xenial
+  - bionic
 sudo: false
 cache:
   - pip
 python:
   - 3.5
   - 3.6
+  - 3.7
+  - 3.8
   - nightly
 env:
   global:
@@ -16,6 +18,12 @@ env:
 services:
   - postgresql
   - docker
+
+conditions: v1
+
+stages:
+  - name: Python 3.8
+    if: tag IS present
 
 # installing dependencies
 before_install:
@@ -97,5 +105,8 @@ matrix:
         # password in url is url-encoded (urllib.parse.quote($PGPASSWORD, safe=''))
         - JUPYTERHUB_TEST_DB_URL=postgresql://jupyterhub:hub%5Btest%2F%3A%3F@127.0.0.1/jupyterhub
     - python: 3.7
+    - stage: Python 3.8
+      script: |
+        pytest -v --maxfail=2 --cov=jupyterhub jupyterhub/tests
   allow_failures:
     - python: nightly
