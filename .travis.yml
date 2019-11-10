@@ -1,6 +1,6 @@
 language: python
 dist:
-  - bionic
+  - xenial
 sudo: false
 cache:
   - pip
@@ -20,10 +20,6 @@ services:
   - docker
 
 conditions: v1
-
-stages:
-  - name: Python 3.8
-    if: tag IS present
 
 # installing dependencies
 before_install:
@@ -105,8 +101,8 @@ matrix:
         # password in url is url-encoded (urllib.parse.quote($PGPASSWORD, safe=''))
         - JUPYTERHUB_TEST_DB_URL=postgresql://jupyterhub:hub%5Btest%2F%3A%3F@127.0.0.1/jupyterhub
     - python: 3.7
-    - stage: Python 3.8
-      script: |
-        pytest -v --maxfail=2 --cov=jupyterhub jupyterhub/tests
+    - python: 3.8
+      # Test SemVer with regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+      condition: $TRAVIS_TAG =~ ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
   allow_failures:
     - python: nightly
