@@ -2,8 +2,13 @@ language: python
 sudo: false
 cache:
   - pip
+python:
+  - 3.6
+  - 3.5
+  - nightly
 env:
   global:
+    - ASYNC_TEST_TIMEOUT=15
     - MYSQL_HOST=127.0.0.1
     - MYSQL_TCP_PORT=13306
 services:
